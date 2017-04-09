@@ -2,6 +2,7 @@ import sys
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QAction, qApp, QFileDialog
+import core.core as core
 
 import file_parser
 
