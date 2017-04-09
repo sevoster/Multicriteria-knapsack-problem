@@ -2,10 +2,9 @@ import sys
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QAction, qApp, QFileDialog
-import core.core as core
 
 import file_parser
-
+import core
 
 class MainWindow(QMainWindow):
 
@@ -46,6 +45,7 @@ class MainWindow(QMainWindow):
     def import_file(self):
         file_name = QFileDialog.getOpenFileName(self, 'Open file', 'C:\\', "Text files (*.txt)")[0]
         input_data = file_parser.parse(file_name)
+        #table = core.gettable(input_data[0], input_data[1], input_data[2][2], input_data[2][0], input_data[2][1])
         self.statusBar().showMessage('Import File: Success')
         print(input_data)
 
