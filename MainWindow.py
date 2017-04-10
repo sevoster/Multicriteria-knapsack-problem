@@ -6,29 +6,29 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QAction, 
 import file_parser
 import core
 
-class MainWindow(QMainWindow):
 
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    def init_ui(self):
         self.statusBar().showMessage('Ready')
 
-        importAction = QAction('&Import', self)
-        importAction.setShortcut('Ctrl+I')
-        importAction.setStatusTip('Import file')
-        importAction.triggered.connect(self.import_file)
+        import_action = QAction('&Import', self)
+        import_action.setShortcut('Ctrl+I')
+        import_action.setStatusTip('Import file')
+        import_action.triggered.connect(self.import_file)
 
-        exitAction = QAction(QIcon('exit.png'), '&Exit', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(qApp.quit)
+        exit_action = QAction(QIcon('exit.png'), '&Exit', self)
+        exit_action.setShortcut('Ctrl+Q')
+        exit_action.setStatusTip('Exit application')
+        exit_action.triggered.connect(qApp.quit)
 
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(importAction)
-        fileMenu.addAction(exitAction)
+        menu_bar = self.menuBar()
+        file_menu = menu_bar.addMenu('&File')
+        file_menu.addAction(import_action)
+        file_menu.addAction(exit_action)
 
         self.resize(600, 400)
         self.center()
@@ -45,9 +45,10 @@ class MainWindow(QMainWindow):
     def import_file(self):
         file_name = QFileDialog.getOpenFileName(self, 'Open file', 'C:\\', "Text files (*.txt)")[0]
         input_data = file_parser.parse(file_name)
-        #table = core.gettable(input_data[0], input_data[1], input_data[2][2], input_data[2][0], input_data[2][1])
+        # table = core.gettable(input_data[0], input_data[1], input_data[2][2], input_data[2][0], input_data[2][1])
         self.statusBar().showMessage('Import File: Success')
         print(input_data)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -1,6 +1,7 @@
 import unittest
 import core
 
+
 class TestCoreTable(unittest.TestCase):
     def test_1(self):
         count = 5
