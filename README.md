@@ -6,3 +6,5 @@ Using Python 3.6, PyCharm as IDE, PyQt5
 sevoster - Dmitry Polunin;
 
 Linserous - Sergey Ilin;
+
+VorobevaAlexa - Vorobeva Alexandra
