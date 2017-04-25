@@ -60,3 +60,51 @@ def rec_fill_table(count, weight):
         table[count][weight] = do_filter(first + sec)
     return table[count][weight]
 
+class Sigma:
+    """Structure that presents record of sigma table"""
+    def __init__(self,u,ksi,eta):
+        self.u=u
+        self.ksi=ksi + 1
+        self.eta=eta + 1
+    def get_u(self):
+        return self.u
+    def get_ksi(self):
+        return self.ksi
+    def get_eta(self):
+        return self.eta
+    def is_not_empty(self):
+        return self.u[0] != 0 or self.u[1] != 0
+# class Table:
+#     def __init__(self):
+#         self.t = [];
+#     def find(u):
+#         for x in self.t:
+#             if x.
+#     def add_sigma(self, sigma):
+#         if sigma.is_not_empty() and :
+
+class Presolver:
+    """Class that makes sigma-table"""
+
+    def __init__(self, table_of_p):
+        self.table_sigma = []
+        dlina = range(len(table_of_p))
+        for i in range(len(table_of_p)):
+            for j in range(len(table_of_p[i])):
+                if table_of_p[i][j] != -1:
+                    for k in range(len(table_of_p[i][j])):
+                        newsigma = Sigma(table_of_p[i][j][k], i, j)
+                        self.addRows(newsigma)
+
+    def addRows(self, sigma):
+        if sigma.is_not_empty():
+            row = [sigma.get_u(), sigma.get_ksi(), sigma.get_eta()]
+            flag = 1
+            for s in self.table_sigma:
+                if s[0] == row[0]:
+                    flag = 0
+            if flag:
+                self.table_sigma.append(row)
+
+    def getTable(self):
+        return self.table_sigma
