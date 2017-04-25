@@ -67,8 +67,8 @@ class Sigma:
 
     def __init__(self, u, ksi, eta):
         self.u = u
-        self.ksi = ksi + 1
-        self.eta = eta + 1
+        self.ksi = ksi
+        self.eta = eta
 
     def get_u(self):
         return self.u
