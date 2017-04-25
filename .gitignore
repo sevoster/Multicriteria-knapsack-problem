@@ -94,7 +94,9 @@ ENV/
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml
+.idea/**/misc.xml
 .idea/dictionaries
+*.iml
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
