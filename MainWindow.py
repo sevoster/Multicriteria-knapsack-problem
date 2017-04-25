@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QDesktopWidget, QAction,
 
 import file_parser
 import core
-
+import presolver
 
 class MainWindow(QMainWindow):
     input_data = []
@@ -73,6 +73,8 @@ class MainWindow(QMainWindow):
         if self.input_data:
             # Put here code to find solution
             print(self.input_data)
+            core.gettable()
+            Presolver
 
 
 if __name__ == '__main__':
