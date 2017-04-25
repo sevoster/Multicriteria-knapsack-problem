@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QDesktopWidget, QAction,
 import file_parser
 import core
 
+
 class MainWindow(QMainWindow):
     input_data = []
 
