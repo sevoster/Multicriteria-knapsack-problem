@@ -72,7 +72,8 @@ class MainWindow(QMainWindow):
         if self.input_data:
             # Put here code to find solution
             print(self.input_data)
-            table = core.gettable(self.input_data[0],self.input_data[1],self.input_data[4],self.input_data[2],self.input_data[3])
+            tablecl = core.Table(self.input_data[0],self.input_data[1],self.input_data[4],self.input_data[2],self.input_data[3])
+            table = tablecl.gettable()
             print(table)
             pres = core.Presolver(table)
             print(pres.getTable())

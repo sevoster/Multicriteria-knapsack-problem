@@ -1,77 +1,81 @@
-table = []
-a = []
-b = []
-c = []
+class Table:
+    """"Table Creation"""
+    def __init__(self, count, weight, weights, costs1, costs2):
+        self.table = []
+        self.count = count
+        self.weight = weight
+        self.weights = weights
+        self.costs1 = costs1
+        self.costs2 = costs2
 
+    def gettable(self):
+        for i in range(self.count):
+            string = []
+            for j in range(self.weight):
+                string.append(-1)
+            self.table.append(string)
+        for j in range(self.weight):
+            if self.weights[0] <= j+1:
+                self.table[0][j] = [[self.costs1[0], self.costs2[0]]]
+            else:
+                self.table[0][j] = [[0, 0]]
+        self.rec_fill_table(self.count - 1, self.weight - 1)
+        return self.table
 
-def gettable(count, weight, weights, costs1, costs2):
-    global table, a, b, c
-    a = weights
-    b = costs1
-    c = costs2
-    for i in range(count):
-        string = []
-        for j in range(weight):
-            string.append(-1)
-        table.append(string)
-    for j in range(weight):
-        if a[0] <= j+1:
-            table[0][j] = [[b[0], c[0]]]
+    @staticmethod
+    def get_sum(first, sec):
+        res = []
+        for vectors in first:
+            tic_res = []
+            for el in range(2):
+                tic_res.append(vectors[el] + sec[el])
+            res.append(tic_res)
+        return res
+
+    @staticmethod
+    def do_filter(variety):
+        result = []
+        for vectors in variety:
+            not_bad = True
+            for vector2 in variety:
+                if (vectors[0] <= vector2[0] and vectors[1] < vector2[1]) or (vectors[0] < vector2[0] and vectors[1] <= vector2[1]):
+                    not_bad = False
+            if not_bad:
+                if vectors not in result:
+                    result.append(vectors)
+        return result
+
+    def rec_fill_table(self, count, weight):
+        if self.table[count][weight] != -1:
+            return self.table[count][weight]
         else:
-            table[0][j] = [[0, 0]]
-    rec_fill_table(count - 1, weight - 1)
-    return table
+            first = self.rec_fill_table(count - 1, weight)
+            sec = []
+            if weight - self.weights[count] >= 0:
+                sec = self.get_sum(self.rec_fill_table(count - 1, weight - self.weights[count]), [self.costs1[count],
+                                                                                                  self.costs2[count]])
+            else:
+                sec = [[0, 0]]
+            self.table[count][weight] = self.do_filter(first + sec)
+        return self.table[count][weight]
 
-
-def get_sum(first, sec):
-    res = []
-    for vectors in first:
-        tic_res = []
-        for el in range(2):
-            tic_res.append(vectors[el] + sec[el])
-        res.append(tic_res)
-    return res
-
-
-def do_filter(variety):
-    result = []
-    for vectors in variety:
-        not_bad = True
-        for vector2 in variety:
-            if (vectors[0] <= vector2[0] and vectors[1] < vector2[1]) or (vectors[0] < vector2[0] and vectors[1] <= vector2[1]):
-                not_bad = False
-        if not_bad:
-            if vectors not in result:
-                result.append(vectors)
-    return result
-
-
-def rec_fill_table(count, weight):
-    global table, a, b, c
-    if table[count][weight] != -1:
-        return table[count][weight]
-    else:
-        first = rec_fill_table(count - 1, weight)
-        sec = []
-        if weight - a[count] >= 0:
-            sec = get_sum(rec_fill_table(count - 1, weight - a[count]), [b[count], c[count]])
-        else:
-            sec = [[0, 0]]
-        table[count][weight] = do_filter(first + sec)
-    return table[count][weight]
 
 class Sigma:
     """Structure that presents record of sigma table"""
-    def __init__(self,u,ksi,eta):
-        self.u=u
-        self.ksi=ksi + 1
-        self.eta=eta + 1
+    def __init__(self, u, ksi, eta):
+        self.u = u
+        self.ksi = ksi + 1
+        self.eta = eta + 1
+
     def get_u(self):
         return self.u
+
     def get_ksi(self):
         return self.ksi
+
     def get_eta(self):
         return self.eta
+
     def is_not_empty(self):
         return self.u[0] != 0 or self.u[1] != 0
 # class Table:
@@ -83,9 +87,9 @@ class Sigma:
 #     def add_sigma(self, sigma):
 #         if sigma.is_not_empty() and :
 
+
 class Presolver:
     """Class that makes sigma-table"""
-
     def __init__(self, table_of_p):
         self.table_sigma = []
         dlina = range(len(table_of_p))
