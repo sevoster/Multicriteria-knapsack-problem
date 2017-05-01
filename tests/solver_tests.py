@@ -5,7 +5,7 @@ from solver import Task
 from core import Sigma
 
 
-class TestCoreTable(unittest.TestCase):
+class TestSolver(unittest.TestCase):
     def setUp(self):  # настройка параметров тестов, запускается перед каждым тестом
         self.test_table = []
         test_table = self.test_table
@@ -45,10 +45,25 @@ class TestCoreTable(unittest.TestCase):
                 for i in range(self.test_task.get_n()):
                     correct_answer.append(0)  # забили нулями
                 correct_answer[x] = 1  # установили нужный х в единицу
-                self.solver.set_x_ksi_to_one(x)
+                self.solver.set_x_ksi_to_one(x+1)
                 self.assertEqual(self.solver.get_solution(), correct_answer)
 
 
 
             # def test_solver(self):
             #     self.assertEqual(self.solver.get_solution(), [1, 1, 0, 1, 1])
+
+    def test_change_u_vector(self):
+        self.solver.u=[8,12]
+        self.solver.ksi=5
+        self.solver.eta=11
+        self.solver.change_u_vector()
+        self.assertEqual(self.solver.u,[6,8])
+
+        self.solver.change_ksi_and_eta()
+        self.solver.change_u_vector()
+        self.assertEqual(self.solver.u, [5, 5])
+
+    def test_calculate(self):
+        self.solver.calculate()
+        self.assertEqual(self.solver.get_solution(),[1,1,0,1,1])
