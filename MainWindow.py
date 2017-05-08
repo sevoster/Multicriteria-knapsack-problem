@@ -4,10 +4,11 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QDesktopWidget, QAction, qApp, QFileDialog, QPushButton,
-                             QGridLayout, QHBoxLayout, QVBoxLayout, QWidget)
+                             QHBoxLayout, QVBoxLayout, QLabel, QWidget)
 
 import file_parser
 import core
+from TableViewer import TableViewer
 
 class MainWindow(QMainWindow):
     input_data = []
@@ -39,11 +40,27 @@ class MainWindow(QMainWindow):
         run_button = QPushButton('Run')
         run_button.clicked.connect(self.on_run_click)
 
+        v_box_info = QVBoxLayout()
+        v_box_info.setAlignment(QtCore.Qt.AlignHCenter)
+
+        self.label = QLabel()
+        self.label.setVisible(False)
+        self.label.setStyleSheet("QLabel { background-color : white; color : blue; }")
+        v_box_info.addWidget(self.label)
+
+        self.table_view = TableViewer()
+        self.table_view.setVisible(False)
+        v_box_info.addWidget(self.table_view)
+
         v_box_buttons = QVBoxLayout()
-        v_box_buttons.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTop)
+        v_box_buttons.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         v_box_buttons.addWidget(run_button)
 
-        central_widget.setLayout(v_box_buttons)
+        h_box = QHBoxLayout()
+        h_box.addLayout(v_box_info)
+        h_box.addLayout(v_box_buttons)
+
+        central_widget.setLayout(h_box)
 
         self.setCentralWidget(central_widget)
         self.resize(600, 400)
@@ -60,8 +77,12 @@ class MainWindow(QMainWindow):
 
     def import_file(self):
         file_name = QFileDialog.getOpenFileName(self, 'Open file', 'C:\\', "Text files (*.txt)")[0]
+        if not file_name:
+            return
         self.input_data = file_parser.parse(file_name)
         if self.input_data != -1:
+            self.setup_label()
+            self.init_table(self.input_data[0], self.input_data[1])
             self.statusBar().showMessage('Import File: Success')
         else:
             self.input_data = []
@@ -71,12 +92,32 @@ class MainWindow(QMainWindow):
     def on_run_click(self):
         if self.input_data:
             # Put here code to find solution
-            print(self.input_data)
-            tablecl = core.Table(self.input_data[0],self.input_data[1],self.input_data[4],self.input_data[2],self.input_data[3])
-            table = tablecl.gettable()
-            print(table)
+            table = core.Table(self.input_data[0], self.input_data[1], self.input_data[4], self.input_data[2],
+                                 self.input_data[3]).gettable()
+            self.table_view.setData(table)
             pres = core.Presolver(table)
-            print(pres.getTable())
+            self.table_view.highlightData(pres.getTable())
+
+    #Put some beauty on it, maybe add some input from text boxes
+    def setup_label(self):
+        margin = "                      "
+        if self.input_data:
+            self.label.setVisible(True)
+            text = "CONDITIONS:\n"
+            for i in range(2, 5):
+                text += margin
+                index = 0
+                while index != len(self.input_data[i]) - 1:
+                    text += str(self.input_data[i][index]) + " * x" + str(index + 1) + " + "
+                    index += 1
+                text += str(self.input_data[i][index]) + " * x" + str(index + 1) + "\n\n"
+            self.label.setText(text)
+
+    def init_table(self, row_count, column_count):
+        self.table_view.clear()
+        self.table_view.setRowCount(row_count)
+        self.table_view.setColumnCount(column_count)
+        self.table_view.setVisible(True)
 
 
 if __name__ == '__main__':

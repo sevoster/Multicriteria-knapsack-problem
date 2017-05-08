@@ -2,9 +2,15 @@ from PyQt5.QtWidgets import QMessageBox
 
 
 def parse(path):
-    file = open(path, 'r')
     msg = QMessageBox()
     msg.setWindowTitle("Parse Error")
+    try:
+        file = open(path, 'r')
+    except FileNotFoundError:
+        msg.setText("File not found")
+        msg.setIcon(QMessageBox.Critical)
+        msg.exec_()
+        return -1
     try:
         dimension = int(file.readline())
         knapsack_capacity = int(file.readline())
