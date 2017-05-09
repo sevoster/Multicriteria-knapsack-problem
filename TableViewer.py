@@ -13,6 +13,7 @@ class TableViewer(QTableWidget):
         for row in table_data:
             for column in row:
                 item = QTableWidgetItem(str(column))
+                item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
                 self.setItem(row_index, column_index, item)
                 column_index += 1
             column_index = 0
