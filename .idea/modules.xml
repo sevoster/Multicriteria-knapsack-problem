@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Multicriteria.iml" filepath="$PROJECT_DIR$/.idea/Multicriteria.iml" />
+      <module fileurl="file://C:\Users\Linser\Desktop\INN\Multicriteria-knapsack-problem\.idea\Multicriteria.iml" filepath="C:\Users\Linser\Desktop\INN\Multicriteria-knapsack-problem\.idea\Multicriteria.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Multicriteria-knapsack-problem.iml" filepath="$PROJECT_DIR$/.idea/Multicriteria-knapsack-problem.iml" />
     </modules>
   </component>

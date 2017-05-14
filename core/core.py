@@ -38,7 +38,8 @@ class Table:
         for vectors in variety:
             not_bad = True
             for vector2 in variety:
-                if (vectors[0] <= vector2[0] and vectors[1] < vector2[1]) or (vectors[0] < vector2[0] and vectors[1] <= vector2[1]):
+                if (vectors[0] <= vector2[0] and vectors[1] < vector2[1]) or \
+                        (vectors[0] < vector2[0] and vectors[1] <= vector2[1]):
                     not_bad = False
             if not_bad:
                 if vectors not in result:
@@ -50,7 +51,6 @@ class Table:
             return self.table[count][weight]
         else:
             first = self.rec_fill_table(count - 1, weight)
-            sec = []
             if weight - self.weights[count] >= 0:
                 sec = self.get_sum(self.rec_fill_table(count - 1, weight - self.weights[count]), [self.costs1[count],
                                                                                                   self.costs2[count]])
@@ -78,29 +78,20 @@ class Sigma:
 
     def is_not_empty(self):
         return self.u[0] != 0 or self.u[1] != 0
-# class Table:
-#     def __init__(self):
-#         self.t = [];
-#     def find(u):
-#         for x in self.t:
-#             if x.
-#     def add_sigma(self, sigma):
-#         if sigma.is_not_empty() and :
 
 
-class Presolver:
+class PreSolver:
     """Class that makes sigma-table"""
     def __init__(self, table_of_p):
         self.table_sigma = []
-        dlina = range(len(table_of_p))
         for i in range(len(table_of_p)):
             for j in range(len(table_of_p[i])):
                 if table_of_p[i][j] != -1:
                     for k in range(len(table_of_p[i][j])):
-                        newsigma = Sigma(table_of_p[i][j][k], i, j)
-                        self.addRows(newsigma)
+                        new_sigma = Sigma(table_of_p[i][j][k], i, j)
+                        self.add_rows(new_sigma)
 
-    def addRows(self, sigma):
+    def add_rows(self, sigma):
         if sigma.is_not_empty():
             row = [sigma.get_u(), sigma.get_ksi(), sigma.get_eta()]
             flag = 1
@@ -110,5 +101,5 @@ class Presolver:
             if flag:
                 self.table_sigma.append(row)
 
-    def getTable(self):
+    def get_table(self):
         return self.table_sigma

@@ -3,7 +3,7 @@ import core
 
 
 class TestCoreTable(unittest.TestCase):
-    def test_table(self):
+    def test_table_big(self):
         count = 5
         weight = 11
         b = [2, 3, 4, 1, 2]
@@ -16,6 +16,17 @@ class TestCoreTable(unittest.TestCase):
                           [-1, -1, -1, [[5, 5]], -1, -1, [[9, 7]], [[9, 7]], -1, -1, [[9, 7]]],
                           [-1, -1, -1, -1, -1, -1, -1, [[9, 7], [6, 8]], -1, -1, [[10, 10]]],
                           [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, [[11, 11], [8, 12]]]])
+
+    def test_table_normal(self):
+        count = 3
+        weight = 5
+        b = [2, 3, 4]
+        c = [3, 2, 2]
+        a = [2, 2, 3]
+        test_table = core.Table(count, weight, a, b, c)
+        self.assertEqual(test_table.gettable(), [[[[0, 0]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]]],
+                                                 [-1, [[2, 3]], -1, -1, [[5, 5]]],
+                                                 [-1, -1, -1, -1, [[6, 5]]]])
 
     def test_sum_1(self):
         test_table = core.Table(5, 5, [], [], [])
