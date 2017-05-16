@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMessageBox
 def parse(path):
     msg = QMessageBox()
     msg.setWindowTitle("Parse Error")
+
     try:
         file = open(path, 'r')
     except FileNotFoundError:
@@ -11,6 +12,7 @@ def parse(path):
         msg.setIcon(QMessageBox.Critical)
         msg.exec_()
         return -1
+
     try:
         dimension = int(file.readline())
         knapsack_capacity = int(file.readline())
@@ -23,7 +25,9 @@ def parse(path):
         msg.setIcon(QMessageBox.Critical)
         msg.exec_()
         return -1
-    if condition_coefficients.__len__() != 3:
+
+    #Validate input data
+    if len(condition_coefficients) != 3:
         msg.setText("There should be three lines with coefficients in file.\nNote: Be sure that file contains one "
                     "empty line in the end.")
         msg.setIcon(QMessageBox.Critical)
