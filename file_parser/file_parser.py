@@ -26,7 +26,7 @@ def parse(path):
         msg.exec_()
         return -1
 
-    #Validate input data
+    # Validate input data
     if len(condition_coefficients) != 3:
         msg.setText("There should be three lines with coefficients in file.\nNote: Be sure that file contains one "
                     "empty line in the end.")

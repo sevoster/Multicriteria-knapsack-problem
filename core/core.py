@@ -1,12 +1,28 @@
+class Task:
+    """Class that presents task parameters. 
+    n - count of variables 
+    b - coefficient of limitation
+    q1, q2 - criteries
+    limitation - limitation of task"""
+
+    def __init__(self, n, b, q1, q2, limitation):  # инициализация задачи
+        self.n = n
+        self.b = b
+        self.q1 = q1
+        self.q2 = q2
+        self.limitation = limitation
+
+
 class Table:
     """"Table Creation"""
-    def __init__(self, count, weight, weights, costs1, costs2):
+
+    def __init__(self, task):
         self.table = []
-        self.count = count
-        self.weight = weight
-        self.weights = weights
-        self.costs1 = costs1
-        self.costs2 = costs2
+        self.count = task.n
+        self.weight = task.b
+        self.weights = task.limitation
+        self.costs1 = task.q1
+        self.costs2 = task.q2
 
     def gettable(self):
         for i in range(self.count):
@@ -15,7 +31,7 @@ class Table:
                 string.append(-1)
             self.table.append(string)
         for j in range(self.weight):
-            if self.weights[0] <= j+1:
+            if self.weights[0] <= j + 1:
                 self.table[0][j] = [[self.costs1[0], self.costs2[0]]]
             else:
                 self.table[0][j] = [[0, 0]]
@@ -60,23 +76,13 @@ class Table:
         return self.table[count][weight]
 
 
-
 class Sigma:
     """Structure that presents record of sigma table"""
 
     def __init__(self, u, ksi, eta):
         self.u = u
-        self.ksi = ksi
-        self.eta = eta
-
-    def get_u(self):
-        return self.u
-
-    def get_ksi(self):
-        return self.ksi
-
-    def get_eta(self):
-        return self.eta
+        self.ksi = ksi + 1
+        self.eta = eta + 1
 
     def is_not_empty(self):
         return self.u[0] != 0 or self.u[1] != 0
@@ -95,13 +101,12 @@ class PreSolver:
 
     def add_rows(self, sigma):
         if sigma.is_not_empty():
-            row = [sigma.get_u(), sigma.get_ksi(), sigma.get_eta()]
             flag = 1
             for s in self.table_sigma:
-                if s[0] == row[0]:
+                if s.u == sigma.u:
                     flag = 0
             if flag:
-                self.table_sigma.append(row)
+                self.table_sigma.append(sigma)
 
     def get_table(self):
         return self.table_sigma

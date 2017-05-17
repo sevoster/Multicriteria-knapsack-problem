@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QDesktopWidget, QAction,
                              QHBoxLayout, QVBoxLayout, QLabel, QWidget, QScrollArea)
 
 import core
+from solver import Solver
 import file_parser
 from TableViewer import TableViewer
 
@@ -21,24 +22,17 @@ class MainWindow(QMainWindow):
 
     def init_ui(self):
         self.statusBar().showMessage('Ready')
-
         self.init_menu_bar()
-
         central_widget = QWidget(self)
-
         display_layout = self.init_display_layout()
         control_layout = self.init_control_layout()
-
         main_h_layout = QHBoxLayout()
         main_h_layout.addLayout(display_layout)
         main_h_layout.addLayout(control_layout)
-
         central_widget.setLayout(main_h_layout)
-
         self.setCentralWidget(central_widget)
         self.resize(600, 400)
         self.center()
-
         self.setWindowTitle('Main Window')
         self.reset_UI()
         self.show()
@@ -170,12 +164,14 @@ class MainWindow(QMainWindow):
     def on_run_click(self):
         if self.input_data:
             # Put here code to find solution
-            table = core.Table(self.input_data[0], self.input_data[1], self.input_data[4], self.input_data[2],
-                               self.input_data[3]).gettable()
-            pres = core.PreSolver(table)
-            #remove when solver is ready
-            solution = [1, 1, 1, 0, 1]
-            self.show_solution(table, pres.get_table(), solution)
+            task = core.Task(self.input_data[0], self.input_data[1], self.input_data[2], self.input_data[3],
+                             self.input_data[4])
+            table = core.Table(task).gettable()
+            sigmatable = core.PreSolver(table).get_table()
+            solver = Solver(sigmatable, task)
+            solver.calculate()
+            solution = solver.get_solution()
+            self.show_solution(table, sigmatable, solution)
             self.statusBar().showMessage("Run: Success")
         else:
             self.statusBar().showMessage("Run: No input data available")

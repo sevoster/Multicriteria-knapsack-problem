@@ -9,7 +9,8 @@ class TestCoreTable(unittest.TestCase):
         b = [2, 3, 4, 1, 2]
         c = [3, 2, 2, 3, 4]
         a = [2, 2, 3, 4, 3]
-        test_table = core.Table(count, weight, a, b, c)
+        task = core.Task(count, weight, b, c, a)
+        test_table = core.Table(task)
         self.assertEqual(test_table.gettable(),
                          [[[[0, 0]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]]],
                           [[[0, 0]], -1, -1, [[5, 5]], [[5, 5]], -1, [[5, 5]], [[5, 5]], -1, -1, [[5, 5]]],
@@ -23,15 +24,18 @@ class TestCoreTable(unittest.TestCase):
         b = [2, 3, 4]
         c = [3, 2, 2]
         a = [2, 2, 3]
-        test_table = core.Table(count, weight, a, b, c)
+        task = core.Task(count, weight, b, c, a)
+        test_table = core.Table(task)
         self.assertEqual(test_table.gettable(), [[[[0, 0]], [[2, 3]], [[2, 3]], [[2, 3]], [[2, 3]]],
                                                  [-1, [[2, 3]], -1, -1, [[5, 5]]],
                                                  [-1, -1, -1, -1, [[6, 5]]]])
 
     def test_sum_1(self):
-        test_table = core.Table(5, 5, [], [], [])
+        task = core.Task(5, 5, [], [], [])
+        test_table = core.Table(task)
         self.assertEqual(test_table.get_sum([[5, 5]], [1, 2]), [[6, 7]])
 
     def test_sum_2(self):
-        test_table = core.Table(5, 5, [], [], [])
+        task = core.Task(5, 5, [], [], [])
+        test_table = core.Table(task)
         self.assertEqual(test_table.get_sum([[5, 5], [9, 0]], [1, 2]), [[6, 7], [10, 2]])

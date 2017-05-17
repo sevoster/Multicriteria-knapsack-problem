@@ -22,7 +22,8 @@ class TableViewer(QTableWidget):
         self.resizeRowsToContents()
 
     def highlightData(self, presolver_data):
-        for item in presolver_data:
+        for sigma in presolver_data:
+            item = [sigma.u, sigma.ksi, sigma.eta]
             row = item[1] - 1
             column = item[2] - 1
             self.item(row, column).setBackground(QtCore.Qt.green)
