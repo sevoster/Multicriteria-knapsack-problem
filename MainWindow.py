@@ -11,13 +11,20 @@ import file_parser
 from TableViewer import TableViewer
 
 
-
 class MainWindow(QMainWindow):
     input_data = []
     max_row_height = 35
 
     def __init__(self):
         super().__init__()
+        self.text_label_conditions = QLabel()
+        self.text_label_table = QLabel()
+        self.text_label_solution = QLabel()
+
+        self.condition_label = QLabel()
+        self.table_view = TableViewer()
+        self.solution_label = QLabel()
+
         self.init_ui()
 
     def init_ui(self):
@@ -34,7 +41,7 @@ class MainWindow(QMainWindow):
         self.resize(600, 400)
         self.center()
         self.setWindowTitle('Main Window')
-        self.reset_UI()
+        self.reset_ui()
         self.show()
 
     def init_menu_bar(self):
@@ -71,42 +78,38 @@ class MainWindow(QMainWindow):
 
     def init_display_layout(self):
         text_label_font = QFont("Veranda", 12, QFont.Bold)
+        condition_label_font = QFont("Veranda", 10, QFont.Decorative)
         solution_label_font = QFont("Veranda", 16, QFont.Bold)
         text_label_style_sheet = "QLabel { padding: 20px 0px 10px 0px; }"
-        solution_label_style_sheet = "QLabel { padding: 20px 0px 30px 0px; background-color: white;}"
+        condition_label_style_sheet = "QLabel { padding: 20px 10px 20px 10px; background-color : white; color : " \
+                                      "black; } "
+        solution_label_style_sheet = "QLabel { padding: 20px 10px 30px 10px; background-color: white;}"
 
         container_widget = QWidget()
         container_layout = QVBoxLayout()
 
-        self.text_label_conditions = QLabel()
         self.text_label_conditions.setText("Conditions:")
         self.text_label_conditions.setFont(text_label_font)
         self.text_label_conditions.setStyleSheet(text_label_style_sheet)
         container_layout.addWidget(self.text_label_conditions, QtCore.Qt.AlignLeft)
 
-        self.condition_label = QLabel()
         self.condition_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.condition_label.setStyleSheet("QLabel { padding: 20px 0px 20px 0px; background-color : white; color : "
-                                           "black; }")
-        self.condition_label.setFont(QFont("Veranda", 10, QFont.Decorative))
+        self.condition_label.setStyleSheet(condition_label_style_sheet)
+        self.condition_label.setFont(condition_label_font)
         container_layout.addWidget(self.condition_label, QtCore.Qt.AlignJustify)
 
-        self.text_label_table = QLabel()
         self.text_label_table.setFont(text_label_font)
         self.text_label_table.setStyleSheet(text_label_style_sheet)
         self.text_label_table.setText("Solution Table:")
         container_layout.addWidget(self.text_label_table, QtCore.Qt.AlignLeft)
 
-        self.table_view = TableViewer()
         container_layout.addWidget(self.table_view, QtCore.Qt.AlignJustify)
 
-        self.text_label_solution = QLabel()
         self.text_label_solution.setFont(text_label_font)
         self.text_label_solution.setStyleSheet(text_label_style_sheet)
         self.text_label_solution.setText("Solution:")
         container_layout.addWidget(self.text_label_solution, QtCore.Qt.AlignLeft)
 
-        self.solution_label = QLabel()
         self.solution_label.setFont(solution_label_font)
         self.solution_label.setStyleSheet(solution_label_style_sheet)
         self.solution_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -131,7 +134,7 @@ class MainWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def reset_UI(self):
+    def reset_ui(self):
         self.text_label_solution.setVisible(False)
         self.text_label_table.setVisible(False)
         self.condition_label.setText("[ EMPTY ]\n\nPlease import data")
@@ -153,7 +156,7 @@ class MainWindow(QMainWindow):
             return
         self.input_data = file_parser.parse(file_name)
         if self.input_data != -1:
-            self.reset_UI()
+            self.reset_ui()
             self.setup_label()
             self.init_table(self.input_data[0], self.input_data[1])
             self.statusBar().showMessage('Import File: Success')
@@ -167,18 +170,18 @@ class MainWindow(QMainWindow):
             task = core.Task(self.input_data[0], self.input_data[1], self.input_data[2], self.input_data[3],
                              self.input_data[4])
             table = core.Table(task).gettable()
-            sigmatable = core.PreSolver(table).get_table()
-            solver = Solver(sigmatable, task)
+            sigma_table = core.PreSolver(table).get_table()
+            solver = Solver(sigma_table, task)
             solver.calculate()
             solution = solver.get_solution()
-            self.show_solution(table, sigmatable, solution)
+            self.show_solution(table, sigma_table, solution)
             self.statusBar().showMessage("Run: Success")
         else:
             self.statusBar().showMessage("Run: No input data available")
 
     def on_close_click(self):
         self.input_data = []
-        self.reset_UI()
+        self.reset_ui()
 
     # Put some beauty on it, maybe add some input from text boxes
     def setup_label(self):
