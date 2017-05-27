@@ -5,18 +5,20 @@ from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QDesktopWidget, QAction, qApp, QFileDialog, QPushButton,
                              QHBoxLayout, QVBoxLayout, QLabel, QWidget, QScrollArea)
 
-import core
+from core import *
 from solver import Solver
-import file_parser
+from file_parser import TaskDataParser
 from TableViewer import TableViewer
 
 
 class MainWindow(QMainWindow):
-    input_data = []
     max_row_height = 35
 
     def __init__(self):
         super().__init__()
+        self.parser = TaskDataParser()
+        self.task = Task()
+
         self.text_label_conditions = QLabel()
         self.text_label_table = QLabel()
         self.text_label_solution = QLabel()
@@ -154,50 +156,52 @@ class MainWindow(QMainWindow):
         file_name = QFileDialog.getOpenFileName(self, 'Open file', 'C:\\', "Text files (*.txt)")[0]
         if not file_name:
             return
-        self.input_data = file_parser.parse(file_name)
-        if self.input_data != -1:
-            self.reset_ui()
-            self.setup_label()
-            self.init_table(self.input_data[0], self.input_data[1])
-            self.statusBar().showMessage('Import File: Success')
-        else:
-            self.input_data = []
+        self.parser.parse(file_name)
+        self.task = self.parser.get_task_instance()
+
+        if not self.task.is_valid():
             self.statusBar().showMessage('Import File: Error')
 
+        self.reset_ui()
+        self.setup_label()
+        self.init_table(self.task.dimension, self.task.knapsack_capacity)
+        self.statusBar().showMessage('Import File: Success')
+
     def on_run_click(self):
-        if self.input_data:
-            # Put here code to find solution
-            task = core.Task(self.input_data[0], self.input_data[1], self.input_data[2], self.input_data[3],
-                             self.input_data[4])
-            table = core.Table(task).gettable()
-            sigma_table = core.PreSolver(table).get_table()
-            solver = Solver(sigma_table, task)
-            solver.calculate()
-            solution = solver.get_solution()
-            self.show_solution(table, sigma_table, solution)
-            self.statusBar().showMessage("Run: Success")
-        else:
+        if not self.task.is_valid():
             self.statusBar().showMessage("Run: No input data available")
 
+        table = Table(self.task).gettable()
+        sigma_table = PreSolver(table).get_table()
+        solver = Solver(sigma_table, self.task)
+        solver.calculate()
+        solution = solver.get_solution()
+        self.show_solution(table, sigma_table, solution)
+        self.statusBar().showMessage("Run: Success")
+
     def on_close_click(self):
-        self.input_data = []
+        self.task = Task()
         self.reset_ui()
 
     # Put some beauty on it, maybe add some input from text boxes
     def setup_label(self):
-        if self.input_data:
-            text = ""
-            for i in range(2, 5):
-                index = 0
-                while index < len(self.input_data[i]) - 1:
-                    text += str(self.input_data[i][index]) + " * x_" + str(index + 1) + " + "
-                    index += 1
-                text += str(self.input_data[i][index]) + " * x_" + str(index + 1)
-                if i == 4:
-                    text += " <= " + str(self.input_data[1])
-                else:
-                    text += " => max\n\n"
-            self.condition_label.setText(text)
+        if not self.task.is_valid():
+            pass
+
+        text = self.coefficient_list_to_str(self.task.first_criterion_coefficients) + " => max\n\n"
+        text += self.coefficient_list_to_str(self.task.second_criterion_coefficients) + " => max\n\n"
+        text += self.coefficient_list_to_str(self.task.limitation_coefficients) + " <= " + str(self.task.knapsack_capacity)
+
+        self.condition_label.setText(text)
+
+    @staticmethod
+    def coefficient_list_to_str(coefficient_list):
+        text = ""
+        length = len(coefficient_list)
+        for index in range(0, length):
+            text += str(coefficient_list[index]) + " * x_" + str(index + 1) + (" + " if index != length - 1 else "")
+
+        return text
 
     def init_table(self, row_count, column_count):
         self.table_view.clear()

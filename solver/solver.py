@@ -9,12 +9,12 @@ class Solver:
         self.task = task  # инициализация параметров задачи
         self.table = table  # инициализация сигма-таблицы
         self.solution = []  # решение
-        for x in range(task.n):
+        for x in range(task.dimension):
             self.solution.append(0)
-        self.ksi = task.n
-        self.eta = task.b
+        self.ksi = task.dimension
+        self.eta = task.knapsack_capacity
         for x in self.table:
-            if x.ksi == task.n and x.eta == task.b:
+            if x.ksi == task.dimension and x.eta == task.knapsack_capacity:
                 self.u = x.u
                 break
         pass
@@ -39,11 +39,12 @@ class Solver:
         pass
 
     def change_u_vector(self):
-        self.u = [self.u[0] - self.task.q1[self.ksi - 1], self.u[1] - self.task.q2[self.ksi - 1]]
+        self.u = [self.u[0] - self.task.first_criterion_coefficients[self.ksi - 1], self.u[1]
+                  - self.task.second_criterion_coefficients[self.ksi - 1]]
         pass
 
     def change_ksi_and_eta(self):
-        self.eta = self.eta - self.task.limitation[self.ksi - 1]
+        self.eta = self.eta - self.task.limitation_coefficients[self.ksi - 1]
         self.ksi = self.ksi - 1
         pass
 

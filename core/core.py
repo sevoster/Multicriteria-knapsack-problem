@@ -1,16 +1,48 @@
 class Task:
     """Class that presents task parameters. 
-    n - count of variables 
-    b - coefficient of limitation
-    q1, q2 - criteries
-    limitation - limitation of task"""
+    dimension - размерность задачи (количество предметов)
+    knapsack_capacity - вместимость рюкзака
+    first_criterion_coefficients - список коэффициентов первого критерия
+    second_criterion_coefficients - список коэффициентов второго критерия
+    limitation_coefficients - список коэффициентов ограничения
+    """
 
-    def __init__(self, n, b, q1, q2, limitation):  # инициализация задачи
-        self.n = n
-        self.b = b
-        self.q1 = q1
-        self.q2 = q2
-        self.limitation = limitation
+    def __init__(self):
+        self.dimension = 0
+        self.knapsack_capacity = 0
+        self.first_criterion_coefficients = []
+        self.second_criterion_coefficients = []
+        self.limitation_coefficients = []
+
+    def set_task_data(self, task_dimension, knapsack_capacity, condition_coefficients):
+        # инициализация задачи
+        if self.validate_data(task_dimension, knapsack_capacity, condition_coefficients):
+            self.dimension = task_dimension
+            self.knapsack_capacity = knapsack_capacity
+            self.first_criterion_coefficients = condition_coefficients[0]
+            self.second_criterion_coefficients = condition_coefficients[1]
+            self.limitation_coefficients = condition_coefficients[2]
+
+    def is_valid(self):
+        return self.validate_data(self.dimension, self.knapsack_capacity,
+                                  [self.first_criterion_coefficients, self.second_criterion_coefficients,
+                                   self.limitation_coefficients])
+
+    @staticmethod
+    def validate_data(dimension, knapsack_capacity, condition_coefficients):
+        # проверка входных данных на корректность
+        if dimension <= 0 or knapsack_capacity <= 0 or len(condition_coefficients) != 3:
+            return False
+
+        for coefficient_list in condition_coefficients:
+            if len(coefficient_list) != dimension:
+                return False
+
+            for coefficient in coefficient_list:
+                if coefficient < 0:
+                    return False
+
+        return True
 
 
 class Table:
@@ -18,11 +50,11 @@ class Table:
 
     def __init__(self, task):
         self.table = []
-        self.count = task.n
-        self.weight = task.b
-        self.weights = task.limitation
-        self.costs1 = task.q1
-        self.costs2 = task.q2
+        self.count = task.dimension
+        self.weight = task.knapsack_capacity
+        self.weights = task.limitation_coefficients
+        self.costs1 = task.first_criterion_coefficients
+        self.costs2 = task.second_criterion_coefficients
 
     def gettable(self):
         for i in range(self.count):
@@ -90,6 +122,7 @@ class Sigma:
 
 class PreSolver:
     """Class that makes sigma-table"""
+
     def __init__(self, table_of_p):
         self.table_sigma = []
         for i in range(len(table_of_p)):
