@@ -44,6 +44,28 @@ class Task:
 
         return True
 
+class SolutionData:
+    """
+    Class contains solution data for a task
+    table - таблица значений критериев
+    sigma_table - выбранные ячейки из таблицы
+    solution_vector - найденная стратегия Х
+    """
+
+    def __init__(self):
+        self.table = None
+        self.sigma_table = None
+        self.solution_vector = None
+
+    def set_solution_data(self, table, sigma_table, solution_vector):
+        self.table = table
+        self.sigma_table = sigma_table
+        self.solution_vector = solution_vector
+
+    def is_valid(self):
+        if self.table is None or self.sigma_table is None or self.solution_vector is None:
+            return False
+        return True
 
 class Table:
     """"Table Creation"""

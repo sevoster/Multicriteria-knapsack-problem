@@ -1,4 +1,3 @@
-from PyQt5.QtWidgets import QMessageBox
 from core import Task
 
 class TaskDataParser:
@@ -19,16 +18,10 @@ class TaskDataParser:
         self.knapsack_capacity = 0
 
     def parse(self, path):
-        msg = QMessageBox()
-        msg.setWindowTitle("Parse Error")
-        msg.setIcon(QMessageBox.Critical)
-
         try:
             file = open(path, 'r')
         except FileNotFoundError:
-            msg.setText("File not found")
-            msg.exec_()
-            return -1
+            raise ParserError("File not found")
 
         self.coefficient_lists.clear()
         try:
@@ -37,13 +30,13 @@ class TaskDataParser:
             for line in file:
                 self.coefficient_lists.append(list(map(int, line.split(' '))))
         except ValueError:
-            msg.setText("File has wrong format: Cannot parse input data.\nNote: Be sure that file contains one empty line "
-                        "in the end.")
-            msg.exec_()
-            return -1
+            raise ParserError("File has wrong format: Cannot parse input data.\nNote: Be sure that file "
+                                    "contains one empty line in the end.")
 
     def get_task_instance(self):
         task = Task()
         task.set_task_data(self.dimension, self.knapsack_capacity, self.coefficient_lists)
         return task
 
+class ParserError(Exception):
+    pass
