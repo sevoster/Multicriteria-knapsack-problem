@@ -1,8 +1,8 @@
 import unittest
-import core
+
 from solver import Solver
-from solver import Task
-from core import Sigma
+from algorithm import Task
+from presolver import Sigma
 
 
 class TestSolver(unittest.TestCase):
@@ -16,7 +16,8 @@ class TestSolver(unittest.TestCase):
         test_table.append(Sigma([10, 10], 4, 11))
         test_table.append(Sigma([8, 12], 5, 11))
         test_table.append(Sigma([11, 11], 5, 11))
-        self.test_task = Task(5, 11, [2, 3, 4, 1, 2], [3, 2, 2, 3, 4], [2, 2, 3, 4, 3])
+        self.test_task = Task()
+        self.test_task.set_task_data(5, 11, [[2, 3, 4, 1, 2], [3, 2, 2, 3, 4], [2, 2, 3, 4, 3]])
         self.solver = Solver(test_table, self.test_task)
 
     def test_get_less_or_equal_record(self):
@@ -38,27 +39,25 @@ class TestSolver(unittest.TestCase):
         self.assertEqual(answer.eta, correct_answer.eta)
 
     def test_set_x_ksi_to_one(self):
-        for x in range(self.test_task.n):
+        for x in range(self.test_task.dimension):
             with self.subTest(x=x):
                 correct_answer = []
                 self.setUp()
-                for i in range(self.test_task.n):
+                for i in range(self.test_task.dimension):
                     correct_answer.append(0)  # забили нулями
                 correct_answer[x] = 1  # установили нужный х в единицу
-                self.solver.set_x_ksi_to_one(x+1)
+                self.solver.set_x_ksi_to_one(x + 1)
                 self.assertEqual(self.solver.get_solution(), correct_answer)
 
-
-
-            # def test_solver(self):
-            #     self.assertEqual(self.solver.get_solution(), [1, 1, 0, 1, 1])
+                # def test_solver(self):
+                #     self.assertEqual(self.solver.get_solution(), [1, 1, 0, 1, 1])
 
     def test_change_u_vector(self):
-        self.solver.u=[8,12]
-        self.solver.ksi=5
-        self.solver.eta=11
+        self.solver.u = [8, 12]
+        self.solver.ksi = 5
+        self.solver.eta = 11
         self.solver.change_u_vector()
-        self.assertEqual(self.solver.u,[6,8])
+        self.assertEqual(self.solver.u, [6, 8])
 
         self.solver.change_ksi_and_eta()
         self.solver.change_u_vector()
@@ -66,5 +65,4 @@ class TestSolver(unittest.TestCase):
 
     def test_calculate(self):
         self.solver.calculate()
-        self.assertEqual(self.solver.get_solution(),[1,1,0,1,1])
-
+        self.assertEqual(self.solver.get_solution(), [1, 1, 0, 1, 1])

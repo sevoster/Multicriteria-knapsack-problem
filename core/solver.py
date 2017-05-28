@@ -1,7 +1,3 @@
-from core import Sigma
-from core import Task
-
-
 class Solver:
     """Class that presents algorithm to find the solution"""
 

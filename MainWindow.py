@@ -5,12 +5,11 @@ from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QDesktopWidget, QAction, qApp, QFileDialog, QPushButton,
                              QHBoxLayout, QVBoxLayout, QLabel, QWidget, QScrollArea, QMessageBox)
 
-sys.path.insert(0, 'core')
-sys.path.insert(0, 'file_parser')
+sys.path.append('core')
+sys.path.append('file_parser')
 
 from TableViewer import TableViewer
-from core import *
-from solver import Solver
+from algorithm import Algorithm
 from file_parser import *
 
 
@@ -20,7 +19,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.parser = TaskDataParser()
-        self.task = Task()
+        self.algorithm = Algorithm()
 
         self.text_label_conditions = QLabel()
         self.text_label_table = QLabel()
@@ -146,16 +145,16 @@ class MainWindow(QMainWindow):
         self.table_view.setVisible(False)
         self.solution_label.setVisible(False)
 
-    def show_solution(self, solution_data):
-        if not solution_data.is_valid():
+    def show_solution(self):
+        if not self.algorithm.is_solution_ready():
             return
 
-        self.table_view.setData(solution_data.table)
-        self.table_view.highlightData(solution_data.sigma_table)
+        self.table_view.setData(self.algorithm.solution.table)
+        self.table_view.highlightData(self.algorithm.solution.sigma_table)
         self.text_label_table.setVisible(True)
         self.table_view.setVisible(True)
         self.text_label_solution.setVisible(True)
-        self.solution_label.setText("X = {0}".format(str(solution_data.solution_vector)))
+        self.solution_label.setText("X = {0}".format(str(self.algorithm.solution.solution_vector)))
         self.solution_label.setVisible(True)
 
     def import_file(self):
@@ -169,9 +168,9 @@ class MainWindow(QMainWindow):
             self.show_error_message("Parser Error", str(error))
             return
 
-        self.task = self.parser.get_task_instance()
+        self.algorithm.task = self.parser.get_task_instance()
 
-        if not self.task.is_valid():
+        if not self.algorithm.is_task_correct():
             self.statusBar().showMessage('Import File: Error')
             return
 
@@ -181,43 +180,32 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage('Import File: Success')
 
     def on_run_click(self):
-        if not self.task.is_valid():
+        if not self.algorithm.is_task_correct():
             self.statusBar().showMessage("Run: No input data available")
             return
 
-        solution_data = self.find_solution()
-
-        self.show_solution(solution_data)
+        self.algorithm.run()
+        self.show_solution()
         self.statusBar().showMessage("Run: Success")
 
-    def find_solution(self):
-        table = Table(self.task).gettable()
-        sigma_table = PreSolver(table).get_table()
-        solver = Solver(sigma_table, self.task)
-        solver.calculate()
-        solution = solver.get_solution()
-        solution_data = SolutionData()
-        solution_data.set_solution_data(table, sigma_table, solution)
-        return solution_data
-
     def on_close_click(self):
-        self.task = Task()
+        self.algorithm = Algorithm()
         self.reset_ui()
 
     def init_table(self):
         self.table_view.clear()
-        self.table_view.setRowCount(self.task.dimension)
-        self.table_view.setColumnCount(self.task.knapsack_capacity)
-        self.table_view.setFixedHeight(self.task.dimension * self.max_row_height)
+        self.table_view.setRowCount(self.algorithm.task.dimension)
+        self.table_view.setColumnCount(self.algorithm.task.knapsack_capacity)
+        self.table_view.setFixedHeight(self.algorithm.task.dimension * self.max_row_height)
 
     def setup_label(self):
-        if not self.task.is_valid():
-            pass
+        if not self.algorithm.is_task_correct():
+            return
 
-        text = "{0} => max\n\n".format(self.coefficient_list_to_str(self.task.first_criterion_coefficients))
-        text += "{0} => max\n\n".format(self.coefficient_list_to_str(self.task.second_criterion_coefficients))
-        text += "{0} <= {1}".format(self.coefficient_list_to_str(self.task.limitation_coefficients),
-                                    str(self.task.knapsack_capacity))
+        text = "{0} => max\n\n".format(self.coefficient_list_to_str(self.algorithm.task.first_criterion_coefficients))
+        text += "{0} => max\n\n".format(self.coefficient_list_to_str(self.algorithm.task.second_criterion_coefficients))
+        text += "{0} <= {1}".format(self.coefficient_list_to_str(self.algorithm.task.limitation_coefficients),
+                                    str(self.algorithm.task.knapsack_capacity))
 
         self.condition_label.setText(text)
 

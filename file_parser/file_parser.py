@@ -1,4 +1,4 @@
-from core import Task
+from algorithm import Task
 
 class TaskDataParser:
     """
