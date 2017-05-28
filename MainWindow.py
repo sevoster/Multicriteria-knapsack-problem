@@ -7,12 +7,11 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QDesktopWidget, QAction,
 
 sys.path.insert(0, 'core')
 sys.path.insert(0, 'file_parser')
-sys.path.insert(0, 'solver')
 
 from TableViewer import TableViewer
 from core import *
-from file_parser import *
 from solver import Solver
+from file_parser import *
 
 
 class MainWindow(QMainWindow):
