@@ -20,7 +20,7 @@ class TestSolver(unittest.TestCase):
         self.test_task.set_task_data(5, 11, [[2, 3, 4, 1, 2], [3, 2, 2, 3, 4], [2, 2, 3, 4, 3]])
         self.solver = Solver(test_table, self.test_task)
 
-    def test_get_less_or_equal_record(self):
+    def test_get_less_or_equal_record_6_8(self):
         u = [6, 8]
         ksi = 4
         eta = 8
@@ -29,6 +29,8 @@ class TestSolver(unittest.TestCase):
         self.assertEqual(answer.u, correct_answer.u)
         self.assertEqual(answer.ksi, correct_answer.ksi)
         self.assertEqual(answer.eta, correct_answer.eta)
+
+    def test_get_less_or_equal_record_10_10(self):
         u = [10, 10]
         ksi = 5
         eta = 12
@@ -48,9 +50,6 @@ class TestSolver(unittest.TestCase):
                 correct_answer[x] = 1  # установили нужный х в единицу
                 self.solver.set_x_ksi_to_one(x + 1)
                 self.assertEqual(self.solver.get_solution(), correct_answer)
-
-                # def test_solver(self):
-                #     self.assertEqual(self.solver.get_solution(), [1, 1, 0, 1, 1])
 
     def test_change_u_vector(self):
         self.solver.u = [8, 12]

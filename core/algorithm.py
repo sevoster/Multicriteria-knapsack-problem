@@ -83,7 +83,7 @@ class Algorithm:
         if not self.task.is_valid():
             return
 
-        table = Table(self.task).gettable()
+        table = Table(self.task).create_table()
         sigma_table = PreSolver(table).get_table()
         solver = Solver(sigma_table, self.task)
         solver.calculate()
